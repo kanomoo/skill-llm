@@ -22,6 +22,7 @@
 * **`.agents/rules/pdf_document_standards.md`:** กฎและมาตรฐานการสร้างเอกสาร PDF / เอกสารวิชาการคุณภาพสูง
 * **`.agents/skills/academic-project-report/`:** สกิลเครื่องมือช่วยสร้างและจัดฟอร์แมตรายงานโครงงานและเล่มจบ
 * **`.agents/skills/pdf-worksheet-solver/`:** สกิลเครื่องมือแก้โจทย์และวิเคราะห์แบบฝึกหัดจากไฟล์เอกสาร
+* **`.agents/skills/slide-designer/`:** สกิลออกแบบสไลด์นำเสนอและการ Pitching ระดับมืออาชีพ (16:9 Widescreen, Visual Bento Grids, Modern Layouts)
 * **`AGENTS.md`:** คู่มือภาพรวมและแนวทางปฏิบัติสำหรับผู้ช่วย AI ในแต่ละโปรเจกต์
 
 ---

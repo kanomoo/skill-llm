@@ -22,10 +22,11 @@ $SourceRepo = if (Test-Path (Join-Path $PSScriptRoot ".agents\rules\pdf_document
 $SourceRules = Join-Path $SourceRepo ".agents\rules\pdf_document_standards.md"
 $SourceSkillAcademic = Join-Path $SourceRepo ".agents\skills\academic-project-report"
 $SourceSkillPdf = Join-Path $SourceRepo ".agents\skills\pdf-worksheet-solver"
+$SourceSkillSlide = Join-Path $SourceRepo ".agents\skills\slide-designer"
 $SourceAgentsMd = Join-Path $SourceRepo "AGENTS.md"
 
 # Validation
-if (-not (Test-Path $SourceRules) -or -not (Test-Path $SourceSkillAcademic) -or -not (Test-Path $SourceSkillPdf) -or -not (Test-Path $SourceAgentsMd)) {
+if (-not (Test-Path $SourceRules) -or -not (Test-Path $SourceSkillAcademic) -or -not (Test-Path $SourceSkillPdf) -or -not (Test-Path $SourceSkillSlide) -or -not (Test-Path $SourceAgentsMd)) {
     Write-Error "Source files missing in $SourceRepo. Please ensure source skills and rules exist."
     exit 1
 }
@@ -61,10 +62,11 @@ foreach ($g in $GlobalTargets) {
     # Copy skills (excluding pycache)
     Copy-Item -Recurse $SourceSkillAcademic $g.SkillsDir -Force
     Copy-Item -Recurse $SourceSkillPdf $g.SkillsDir -Force
+    Copy-Item -Recurse $SourceSkillSlide $g.SkillsDir -Force
 
     # Clean pycache in global skills
-    Get-ChildItem -Path (Join-Path $g.SkillsDir "academic-project-report"), (Join-Path $g.SkillsDir "pdf-worksheet-solver") -Recurse -Filter "__pycache__" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
-    Get-ChildItem -Path (Join-Path $g.SkillsDir "academic-project-report"), (Join-Path $g.SkillsDir "pdf-worksheet-solver") -Recurse -Filter "*.pyc" -ErrorAction SilentlyContinue | Remove-Item -Force
+    Get-ChildItem -Path (Join-Path $g.SkillsDir "academic-project-report"), (Join-Path $g.SkillsDir "pdf-worksheet-solver"), (Join-Path $g.SkillsDir "slide-designer") -Recurse -Filter "__pycache__" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+    Get-ChildItem -Path (Join-Path $g.SkillsDir "academic-project-report"), (Join-Path $g.SkillsDir "pdf-worksheet-solver"), (Join-Path $g.SkillsDir "slide-designer") -Recurse -Filter "*.pyc" -ErrorAction SilentlyContinue | Remove-Item -Force
 }
 
 Write-Host "  Global skills and rules successfully updated!`n" -ForegroundColor Green
@@ -92,6 +94,12 @@ foreach ($project in $Projects) {
     $projName = $project.Name
     $isGit = Test-Path (Join-Path $projPath ".git")
 
+    # Skip self repo and external repos
+    if ($projPath -eq $SourceRepo -or $projName -eq "Arch-Hyprland") {
+        Write-Host "  [$CurrentIndex/$TotalProjects] Skipping '$projName'..." -ForegroundColor Cyan
+        continue
+    }
+
     Write-Host "  [$CurrentIndex/$TotalProjects] Processing '$projName'..." -ForegroundColor Cyan
 
     # Setup .agents/rules and .agents/skills
@@ -103,16 +111,15 @@ foreach ($project in $Projects) {
     New-Item -ItemType Directory -Path $targetSkillsDir -Force | Out-Null
 
     # Copy rules and skills
-    if ($projPath -ne $SourceRepo) {
-        Copy-Item $SourceRules (Join-Path $targetRulesDir "pdf_document_standards.md") -Force
-        Copy-Item -Recurse $SourceSkillAcademic $targetSkillsDir -Force
-        Copy-Item -Recurse $SourceSkillPdf $targetSkillsDir -Force
-        Copy-Item $SourceAgentsMd $targetAgentsMd -Force
-    }
+    Copy-Item $SourceRules (Join-Path $targetRulesDir "pdf_document_standards.md") -Force
+    Copy-Item -Recurse $SourceSkillAcademic $targetSkillsDir -Force
+    Copy-Item -Recurse $SourceSkillPdf $targetSkillsDir -Force
+    Copy-Item -Recurse $SourceSkillSlide $targetSkillsDir -Force
+    Copy-Item $SourceAgentsMd $targetAgentsMd -Force
 
     # Clean pycache
-    Get-ChildItem -Path (Join-Path $targetSkillsDir "academic-project-report"), (Join-Path $targetSkillsDir "pdf-worksheet-solver") -Recurse -Filter "__pycache__" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
-    Get-ChildItem -Path (Join-Path $targetSkillsDir "academic-project-report"), (Join-Path $targetSkillsDir "pdf-worksheet-solver") -Recurse -Filter "*.pyc" -ErrorAction SilentlyContinue | Remove-Item -Force
+    Get-ChildItem -Path (Join-Path $targetSkillsDir "academic-project-report"), (Join-Path $targetSkillsDir "pdf-worksheet-solver"), (Join-Path $targetSkillsDir "slide-designer") -Recurse -Filter "__pycache__" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+    Get-ChildItem -Path (Join-Path $targetSkillsDir "academic-project-report"), (Join-Path $targetSkillsDir "pdf-worksheet-solver"), (Join-Path $targetSkillsDir "slide-designer") -Recurse -Filter "*.pyc" -ErrorAction SilentlyContinue | Remove-Item -Force
 
     # Git handling
     if ($isGit) {
@@ -120,7 +127,7 @@ foreach ($project in $Projects) {
         if ($status) {
             Write-Host "    -> Changes detected in git repo. Staging and committing..." -ForegroundColor Gray
             git -C $projPath add AGENTS.md .agents
-            git -C $projPath commit -m "feat(agents): install academic-project-report, pdf-worksheet-solver skills and standards" --quiet
+            git -C $projPath commit -m "feat(agents): update universal skills (academic-project-report, slide-designer, pdf-worksheet-solver) and standards" --quiet
 
             if (-not $SkipGitPush) {
                 $branch = (git -C $projPath rev-parse --abbrev-ref HEAD).Trim()
