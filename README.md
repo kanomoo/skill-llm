@@ -111,3 +111,18 @@ python scripts/test-all-ai.py
 * เปิด OpenAI-compatible endpoint ที่ `http://127.0.0.1:4000`
 * ใช้คอนฟิกจาก `litellm_config.yaml` รวมทุกโมเดลเข้าด้วยกัน
 
+### 4. รัน Local AI (Qwen2.5-Coder-7B บน RX 580 Vulkan GPU)
+```powershell
+# รันเซิร์ฟเวอร์ LM Studio พอร์ต 1234
+.\scripts\start-lmstudio-server.bat
+# หรือ
+.\scripts\start-lmstudio-server.ps1
+
+# ทดสอบ Local AI Server
+python scripts\test-local-ai.py
+```
+* เปิด OpenAI-compatible endpoint ที่ `http://127.0.0.1:1234/v1`
+* ปรับแต่งด้วย **Vulkan Backend** ดึง VRAM การ์ดจอ 100% พร้อม Context 32K สำหรับอ่าน Wiki โดยเฉพาะ
+* เชื่อมโยงเข้ากับ 9router ผ่านโมเดล `local-combo` หรือ `local/qwen2.5-coder-7b-instruct` อัตโนมัติ
+
+
