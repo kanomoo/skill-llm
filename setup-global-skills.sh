@@ -2,14 +2,15 @@
 set -e
 
 # =======================================================
-#  Antigravity Universal Skills and Standards Installer
-#  Bash Edition (Linux / macOS)
+#  Antigravity Universal Skills, MCP & Rules Installer
+#  Bash Edition (Linux / macOS / Arch-Hyprland)
 # =======================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECTS_ROOT="${HOME}/Projects"
 SKIP_GIT_PUSH=false
 GLOBAL_ONLY=false
+INSTALL_PACKAGES=false
 
 # ANSI color codes
 CYAN='\033[0;36m'
@@ -21,7 +22,7 @@ NC='\033[0m' # No Color
 
 # Print Header
 echo -e "\n${CYAN}=======================================================${NC}"
-echo -e "${CYAN} Antigravity Universal Skills and Standards Installer ${NC}"
+echo -e "${CYAN} Antigravity Universal Skills, MCP & Rules Installer   ${NC}"
 echo -e "${CYAN}=======================================================${NC}\n"
 
 # Help message
@@ -33,6 +34,7 @@ Options:
     --projects-root <PATH>   Specify root directory of projects (default: $HOME/Projects)
     --skip-git-push          Stage and commit changes without pushing to remote
     --global-only            Install only to global directories (~/.gemini and ~/.agents)
+    --install-packages       Install/upgrade Python & NPM packages (litellm, browser-use, dspy, mem0, repomix)
     -h, --help               Display this help message
 EOHELP
     exit 0
@@ -53,6 +55,10 @@ while [[ $# -gt 0 ]]; do
             GLOBAL_ONLY=true
             shift
             ;;
+        --install-packages)
+            INSTALL_PACKAGES=true
+            shift
+            ;;
         -h|--help)
             show_help
             ;;
@@ -63,28 +69,47 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Source assets validation
-SOURCE_RULES="${SCRIPT_DIR}/.agents/rules/pdf_document_standards.md"
-SOURCE_SKILL_ACADEMIC="${SCRIPT_DIR}/.agents/skills/academic-project-report"
-SOURCE_SKILL_PDF="${SCRIPT_DIR}/.agents/skills/pdf-worksheet-solver"
-SOURCE_SKILL_SLIDE="${SCRIPT_DIR}/.agents/skills/slide-designer"
+SOURCE_RULES_DIR="${SCRIPT_DIR}/.agents/rules"
+SOURCE_SKILLS_DIR="${SCRIPT_DIR}/.agents/skills"
+SOURCE_MCP_CONFIG="${SCRIPT_DIR}/mcp_config.json"
 SOURCE_AGENTS_MD="${SCRIPT_DIR}/AGENTS.md"
 
-if [[ ! -f "$SOURCE_RULES" || ! -d "$SOURCE_SKILL_ACADEMIC" || ! -d "$SOURCE_SKILL_PDF" || ! -d "$SOURCE_SKILL_SLIDE" || ! -f "$SOURCE_AGENTS_MD" ]]; then
+if [[ ! -d "$SOURCE_RULES_DIR" || ! -d "$SOURCE_SKILLS_DIR" || ! -f "$SOURCE_AGENTS_MD" ]]; then
     echo -e "${RED}Source files missing in ${SCRIPT_DIR}. Please ensure source skills and rules exist.${NC}"
     exit 1
 fi
 
+# 0. Optional package installation
+if [[ "$INSTALL_PACKAGES" == true ]]; then
+    echo -e "${YELLOW}[0/3] Checking and Installing Required CLI and Python Packages...${NC}"
+    
+    # Python packages
+    if command -v pip &>/dev/null || command -v pip3 &>/dev/null; then
+        PIP_CMD="pip"
+        command -v pip3 &>/dev/null && PIP_CMD="pip3"
+        echo -e "  ${GRAY}-> Installing Python packages: litellm, browser-use, dspy, mem0ai, composio...${NC}"
+        $PIP_CMD install --upgrade litellm browser-use dspy mem0ai composio --quiet || true
+        echo -e "  ${GREEN}Python packages successfully installed!${NC}"
+    fi
+
+    # NPM packages
+    if command -v npm &>/dev/null; then
+        echo -e "  ${GRAY}-> Installing global NPM packages: repomix, @composio/core...${NC}"
+        npm install -g repomix @composio/core --quiet || true
+        echo -e "  ${GREEN}NPM packages successfully installed!${NC}"
+    fi
+fi
+
 # 1. Global Installation: ~/.gemini and ~/.agents
-echo -e "${YELLOW}[1/2] Installing Global Skills and Rules...${NC}"
+echo -e "${YELLOW}[1/2] Installing Global Skills, MCP and Rules...${NC}"
 
 GLOBAL_TARGETS=(
-    "${HOME}/.gemini/config|Antigravity Global (~/.gemini/config)"
-    "${HOME}/.agents|Universal Agent Global (~/.agents)"
+    "${HOME}/.gemini/config|Antigravity Global (~/.gemini/config)|true"
+    "${HOME}/.agents|Universal Agent Global (~/.agents)|false"
 )
 
 for entry in "${GLOBAL_TARGETS[@]}"; do
-    IFS="|" read -r base_dir target_name <<< "$entry"
+    IFS="|" read -r base_dir target_name is_gemini <<< "$entry"
     echo -e "  ${GRAY}-> Configuring ${target_name}...${NC}"
 
     skills_dir="${base_dir}/skills"
@@ -92,21 +117,30 @@ for entry in "${GLOBAL_TARGETS[@]}"; do
 
     mkdir -p "$skills_dir" "$rules_dir"
 
-    # Copy rules
-    cp "$SOURCE_RULES" "${rules_dir}/pdf_document_standards.md"
+    # Copy all rules dynamically
+    cp -f "${SOURCE_RULES_DIR}"/*.md "${rules_dir}/" 2>/dev/null || true
 
-    # Copy skills
-    rm -rf "${skills_dir}/academic-project-report" "${skills_dir}/pdf-worksheet-solver" "${skills_dir}/slide-designer"
-    cp -r "$SOURCE_SKILL_ACADEMIC" "${skills_dir}/"
-    cp -r "$SOURCE_SKILL_PDF" "${skills_dir}/"
-    cp -r "$SOURCE_SKILL_SLIDE" "${skills_dir}/"
+    # Copy all skills dynamically
+    for skill_path in "${SOURCE_SKILLS_DIR}"/*; do
+        if [[ -d "$skill_path" ]]; then
+            skill_name="$(basename "$skill_path")"
+            rm -rf "${skills_dir}/${skill_name}"
+            cp -r "$skill_path" "${skills_dir}/"
+        fi
+    done
+
+    # Copy MCP configuration if Gemini
+    if [[ "$is_gemini" == "true" && -f "$SOURCE_MCP_CONFIG" ]]; then
+        cp -f "$SOURCE_MCP_CONFIG" "${base_dir}/mcp_config.json"
+        echo -e "    ${GRAY}-> Updated mcp_config.json in ${target_name}${NC}"
+    fi
 
     # Clean pycache
-    find "${skills_dir}/academic-project-report" "${skills_dir}/pdf-worksheet-solver" "${skills_dir}/slide-designer" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-    find "${skills_dir}/academic-project-report" "${skills_dir}/pdf-worksheet-solver" "${skills_dir}/slide-designer" -type f -name "*.pyc" -delete 2>/dev/null || true
+    find "$skills_dir" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    find "$skills_dir" -type f -name "*.pyc" -delete 2>/dev/null || true
 done
 
-echo -e "  ${GREEN}Global skills and rules successfully updated!${NC}\n"
+echo -e "  ${GREEN}Global skills, rules, and MCP configs successfully updated!${NC}\n"
 
 if [[ "$GLOBAL_ONLY" == true ]]; then
     echo -e "${GREEN}GlobalOnly flag set. Finished!${NC}"
@@ -117,7 +151,7 @@ fi
 echo -e "${YELLOW}[2/2] Scanning and Deploying to Projects in ${PROJECTS_ROOT}...${NC}"
 
 if [[ ! -d "$PROJECTS_ROOT" ]]; then
-    echo -e "${RED}Projects root directory not found: ${PROJECTS_ROOT}${NC}"
+    echo -e "${YELLOW}Projects root directory not found: ${PROJECTS_ROOT} (Skipping project scan)${NC}"
     exit 0
 fi
 
@@ -148,26 +182,31 @@ for proj_path in "${projects[@]}"; do
 
     mkdir -p "$target_rules_dir" "$target_skills_dir"
 
-    # Copy rules and skills
-    cp "$SOURCE_RULES" "${target_rules_dir}/pdf_document_standards.md"
-    rm -rf "${target_skills_dir}/academic-project-report" "${target_skills_dir}/pdf-worksheet-solver" "${target_skills_dir}/slide-designer"
-    cp -r "$SOURCE_SKILL_ACADEMIC" "${target_skills_dir}/"
-    cp -r "$SOURCE_SKILL_PDF" "${target_skills_dir}/"
-    cp -r "$SOURCE_SKILL_SLIDE" "${target_skills_dir}/"
-    cp "$SOURCE_AGENTS_MD" "$target_agents_md"
+    # Copy all rules dynamically
+    cp -f "${SOURCE_RULES_DIR}"/*.md "${target_rules_dir}/" 2>/dev/null || true
+
+    # Copy all skills dynamically
+    for skill_path in "${SOURCE_SKILLS_DIR}"/*; do
+        if [[ -d "$skill_path" ]]; then
+            skill_name="$(basename "$skill_path")"
+            rm -rf "${target_skills_dir}/${skill_name}"
+            cp -r "$skill_path" "${target_skills_dir}/"
+        fi
+    done
+
+    cp -f "$SOURCE_AGENTS_MD" "$target_agents_md"
 
     # Clean pycache
-    find "${target_skills_dir}/academic-project-report" "${target_skills_dir}/pdf-worksheet-solver" "${target_skills_dir}/slide-designer" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-    find "${target_skills_dir}/academic-project-report" "${target_skills_dir}/pdf-worksheet-solver" "${target_skills_dir}/slide-designer" -type f -name "*.pyc" -delete 2>/dev/null || true
+    find "$target_skills_dir" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    find "$target_skills_dir" -type f -name "*.pyc" -delete 2>/dev/null || true
 
     # Git handling
     if [[ -d "${proj_path}/.git" ]]; then
-        # Check git status for our files
         status="$(git -C "$proj_path" status --porcelain -- AGENTS.md .agents)"
         if [[ -n "$status" ]]; then
             echo -e "    ${GRAY}-> Changes detected in git repo. Staging and committing...${NC}"
             git -C "$proj_path" add AGENTS.md .agents
-            git -C "$proj_path" commit -m "feat(agents): update universal skills (academic-project-report, slide-designer, pdf-worksheet-solver) and standards" --quiet
+            git -C "$proj_path" commit -m "feat(agents): update universal skills, rules, and effective agent principles" --quiet
 
             if [[ "$SKIP_GIT_PUSH" == false ]]; then
                 branch="$(git -C "$proj_path" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "main")"
@@ -189,5 +228,5 @@ for proj_path in "${projects[@]}"; do
 done
 
 echo -e "\n${CYAN}=======================================================${NC}"
-echo -e "${GREEN} ALL PROJECTS AND GLOBAL SKILLS FULLY SYNCHRONIZED! ${NC}"
+echo -e "${GREEN} ALL PROJECTS, SKILLS, RULES & MCP FULLY SYNCHRONIZED! ${NC}"
 echo -e "${CYAN}=======================================================${NC}\n"

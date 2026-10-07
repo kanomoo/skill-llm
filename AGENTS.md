@@ -1,38 +1,82 @@
-# Workspace Rules & Guidelines
+# Workspace Rules & Guidelines (Universal Standards)
 
-## 1. PDF Document Standards (In-Place Filling & Anti-Clutter Rules)
-เมื่อสร้างหรือแก้ไขเอกสาร PDF และข้อสอบ/สไลด์เฉลย ให้ปฏิบัติตามมาตรฐานใน [.agents/rules/pdf_document_standards.md](file:///.agents/rules/pdf_document_standards.md) อย่างเคร่งครัด:
-- **ใส่ในกรอบ/ช่องว่าง/ที่เว้นว่างให้ครบก่อน (In-Place Filling First)**: เติมคำตอบลงในช่องว่าง, ช่องตาราง, และที่เว้นว่างเดิมให้ครบถ้วน วางข้อความให้ตรงจุดที่สมควร เช่น ตาราง Connect ที่มีหัวข้อ `B`, `C`, `D` ให้เติมตัวอักษรต่อท้ายเป็น `BC`, `BD`, `BA` ในช่องตารางเดิมทันที
-- **ห้ามเอะอะสร้างกรอบมั่วซั่ว (No Arbitrary Floating Cards)**: ห้ามใส่กล่องข้อความ, ป้ายเตือน (Alerts), หรือการ์ดทฤษฎีลอยเกะกะเต็มสไลด์เด็ดขาด หากสไลด์มีข้อความเดิมอยู่แล้ว (เช่น คำตอบหรือคำเตือนเดิม) ห้ามสร้างกล่องลอยมาครอบซ้ำซ้อน
-- **การเขียนหน้าใหม่เป็นลำดับสุดท้าย (New Page as Strict Last Resort)**: การเพิ่มหน้าใหม่ทำได้ต่อเมื่อไม่เหลือที่ว่างเลยจริง ๆ เท่านั้น ห้ามสร้างหน้าใหม่มั่วซั่ว จำนวนหน้าต้องตรงกับสไลด์ต้นฉบับ (6 หน้า = 6 สไลด์)
-- **Zero Occlusion**: ห้ามวางข้อความทับเส้น, ตัวหนังสือ, ตาราง, กราฟ, หรือลูกศรเดิมเด็ดขาด
-- **Grid Alignment**: ตรวจจับพิกัดเส้นตารางจริง วางตัวเลขตรงกึ่งกลางช่องตาราง ไม่หลุดหรือเลื่อนบรรทัด
-- **Verification**: ต้อง Render เป็นภาพ PNG และตรวจสอบด้วยสายตาทุกหน้าก่อนส่งมอบงาน
+## 0. กฎเหล็กสูงสุด: การประเมินเจตนาและการยกระดับคุณภาพงานอัตโนมัติ (Proactive Quality Elevation)
+* **ประเมินเจตนาและหยิบ Skill หรือ MCP อัตโนมัติ:** เมื่อผู้ใช้สั่งงานแม้จะเป็นประโยคธรรมดา สั้น ๆ หรือคำสั่งทั่วไป Agent ทุกตัวต้องประเมินเจตนา (Intent) และหยิบ Skill หรือ MCP ที่เกี่ยวข้องขึ้นมาช่วยยกระดับคุณภาพของงานให้เป็นระดับมืออาชีพโดยอัตโนมัติเสมอ
+* **ห้ามตอบแบบลวก ๆ หรือใช้ Generic AI Look:**
+  - งานออกแบบ UI/UX, เว็บไซต์, Dashboard ➔ ดึง `inspo-design` และ `inspo` MCP อ้างอิงเว็บจริงเสมอ
+  - งานอ่าน/สกัดสไลด์ PDF, เอกสารเรียน, ข้อสอบ, สูตรคำนวณ ➔ ดึง `mineru` MCP ถอดสมการ LaTeX และตารางเป๊ะ 100%
+  - งานแพ็กโค้ดโปรเจกต์ หรือรวบรวมไฟล์ Wiki ➔ ดึง `repomix` รันออกเป็น XML/Markdown
+  - งานท่องเว็บที่ไม่มี API หรือฟอร์มซับซ้อน ➔ ดึง `browser-use` / `playwright` ควบคุมเบราว์เซอร์จริง
+  - งานโจทย์ยาก อัลกอริทึมซับซ้อน หรือวางระบบ ➔ ดึง `sequential-thinking` MCP วางแผนทีละสเต็ป
+  - งานรายงานวิชาการ โครงงาน หรือใบงาน ➔ ดึง `academic-project-report` หรือ `pdf-worksheet-solver`
+* **ทำงานเชิงรุก 100%:** ไม่ต้องรอให้ผู้ใช้เอ่ยชื่อเครื่องมือ ให้วิเคราะห์เป้าหมายแล้วหยิบเครื่องมือที่ดีที่สุดมาใช้ทันที
 
-## 2. Academic Project Report & Presentation Standards (Official Thai Academic Standards)
-เมื่อได้รับมอบหมายให้สร้าง จัดรูปแบบ หรือปรับปรุงรูปเล่มรายงานโครงงาน (.docx, .pdf) หรือสไลด์นำเสนอ (.pptx, .pdf):
-- ให้เรียกใช้ทักษะ **`academic-project-report`** (จาก [.agents/skills/academic-project-report/SKILL.md](file:///.agents/skills/academic-project-report/SKILL.md)) โดยอัตโนมัติ
-- บังคับใช้มาตรฐานรูปแบบวิชาการ/ราชการและเกณฑ์บัณฑิตวิทยาลัย มจพ. อย่างเคร่งครัด:
-  - **3 เสาหลัก:** Alignment (วัตถุประสงค์เชื่อมโยงผล 1:1), Rigor (ระเบียบวิธีวิจัยและทฤษฎีรองรับ), Polish (ประณีตสมบูรณ์แบบ)
-  - **ฟอนต์:** TH Sarabun PSK (ชื่อบท 20pt หนา กึ่งกลาง, หัวข้อ 16pt หนา ชิดซ้าย, เนื้อหา 16pt จัดกระจายแบบ Justified ย่อหน้า 0.5 นิ้ว)
-  - **ขอบกระดาษ:** ซ้าย 1.5 นิ้ว, บน 1.5 นิ้ว, ขวา 1.0 นิ้ว, ล่าง 1.0 นิ้ว (หน้าปก ซ้าย-ขวา 1.0 นิ้ว สมดุลระดับพิกัด พร้อมตารางรายชื่อสมาชิก 3 คอลัมน์ตรงแนว)
-  - **Zero Dangling Punctuation:** ปราศจากเครื่องหมายวรรคตอน ปิดวงเล็บ หรือเปอร์เซ็นต์หลุดไปขึ้นบรรทัดใหม่อย่างโดดเดี่ยว
-  - **การจัดแท็บรายการข้อย่อย:** บรรทัดแรกย่อหน้า 0.8 นิ้ว บรรทัดที่สอง 0.5 นิ้ว ขอบขวาเรียบสนิทเสมอกันทุกบรรทัด
-  - **กฎเหล็กหน้าแหว่ง (Zero Orphan Pages):** บริหารจำนวนหน้าต่อบทแบบพอดี (Page Budgeting) ห้ามมีหน้าตกหล่นที่มีเนื้อหาเพียง 1-5 บรรทัด
-  - **ตารางและภาพ:** ตารางวิชาการ APA ไม่มีเส้นตั้ง (`cantSplit` และ `tblHeader` เสมอ), ภาพประกอบมีหมายเลข คำบรรยาย และแหล่งที่มากึ่งกลาง
-  - **สารบัญ 2 รอบ (Two-Pass Dynamic Sync):** แปลงเป็น PDF เพื่อสแกนพิกัดหน้าจริงด้วย PyMuPDF แล้วนำกลับมาใส่ในสารบัญ Word พร้อมจุดไข่ปลาชิดขวาที่ 8300 dxa เพื่อให้เลขหน้าตรง 100%
-  - **สถาปัตยกรรมส่งงาน:** จัดเก็บไฟล์ส่งมอบลงในโฟลเดอร์ `00_ไฟล์ส่งงาน_<ProjectName>` ครบถ้วน สะอาด ปราศจากไฟล์ขยะ
+---
 
-## 3. PDF Worksheet & Exam Solving (Automated In-Place Solver)
+## 1. ปรัชญาการปฏิบัติการ (Effective Agent Principles)
+* **Workflows First:** ปฏิบัติตามลำดับขั้นตอนที่แน่นอน (Deterministic) หากงานมีสเต็ปชัดเจน
+* **Evaluator-Optimizer (Critic Loop):** ตรวจทานผลงานรอบแรกกับ Checklist ความถูกต้อง ข้อกำหนด และ Edge cases ก่อนส่งมอบเสมอ
+* **Zero Data Loss:** ห้ามเขียนทับหรือลบไฟล์สำคัญโดยเด็ดขาด ตรวจสอบสถานะก่อนแก้ไขเสมอ
+
+---
+
+## 2. PDF Document Standards (In-Place Filling & Anti-Clutter Rules)
+เมื่อสร้างหรือแก้ไขเอกสาร PDF และข้อสอบ/สไลด์เฉลย ให้ปฏิบัติตามมาตรฐานใน [.agents/rules/pdf_document_standards.md](file:///.agents/rules/pdf_document_standards.md):
+- **In-Place Filling First**: เติมคำตอบลงในช่องว่างและตารางเดิม ห้ามสร้างกล่องลอยมาครอบซ้ำซ้อน
+- **Zero Occlusion**: ห้ามวางข้อความทับเส้น ตาราง หรือข้อความเดิม
+- **Grid Alignment**: จัดวางข้อความกึ่งกลางช่องตารางอย่างสมดุล
+- **Verification**: เรนเดอร์เป็นภาพ PNG และตรวจสอบด้วยสายตาทุกหน้าก่อนส่งมอบ
+
+---
+
+## 3. Academic Project Report & Presentation Standards
+เมื่อสร้าง จัดรูปแบบ หรือปรับปรุงรายงานโครงงาน (.docx, .pdf) หรือสไลด์นำเสนอ (.pptx, .pdf):
+- เรียกใช้ทักษะ **`academic-project-report`** (จาก [.agents/skills/academic-project-report/SKILL.md](file:///.agents/skills/academic-project-report/SKILL.md))
+- ฟอนต์ TH Sarabun PSK, ขอบกระดาษ ซ้าย 1.5", บน 1.5", ขวา 1.0", ล่าง 1.0"
+- ตาราง APA ปราศจากเส้นตั้ง, Two-pass Dynamic Page Sync ให้สารบัญตรงกับหน้าจริง 100%
+- ส่งมอบไฟล์ในโฟลเดอร์ `00_ไฟล์ส่งงาน_<ProjectName>`
+
+---
+
+## 4. PDF Worksheet & Exam Solving (Automated In-Place Solver)
 เมื่อได้รับโจทย์ เอกสารการสอน ชีทแบบฝึกหัด หรือข้อสอบที่เป็น PDF/Image:
-- ให้เรียกใช้ทักษะ **`pdf-worksheet-solver`** (จาก [.agents/skills/pdf-worksheet-solver/SKILL.md](file:///.agents/skills/pdf-worksheet-solver/SKILL.md))
+- เรียกใช้ทักษะ **`pdf-worksheet-solver`** (จาก [.agents/skills/pdf-worksheet-solver/SKILL.md](file:///.agents/skills/pdf-worksheet-solver/SKILL.md))
 - เติมคำตอบลงในช่องว่างและตารางของเอกสารต้นฉบับโดยตรง ไม่สร้างกล่องลอยเกะกะ
-- ตรวจสอบความถูกต้องทางคณิตศาสตร์/ตรรกะแบบ Multi-pass และยืนยันด้วยภาพเรนเดอร์ PNG เสมอก่อนส่งมอบ
 
-## 4. Modern Executive Presentation & Pitch Deck Design (slide-designer)
-เมื่อสร้างหรือออกแบบสไลด์นำเสนอสำหรับการ Pitching, นำเสนอโครงงาน, หรือสไลด์เชิงธุรกิจ:
-- ให้เรียกใช้ทักษะ **`slide-designer`** (จาก [.agents/skills/slide-designer/SKILL.md](file:///.agents/skills/slide-designer/SKILL.md))
-- อัตราส่วนสไลด์ Widescreen 16:9 สไตล์ Modern Executive Bento Grid
-- กฎการวางรูปภาพแบบ Proportional Height-First Sizing (`height=Inches(5.2)`, จัดกึ่งกลางแนวนอน ปลอดภัยเหนือแถบ Footer `top=6.95 นิ้ว`)
-- หน้าปกจัดรายชื่อสมาชิกแบบ 2 คอลัมน์ซ้าย-ขวาอย่างสมดุล ไม่ตัดคำหรือหักบรรทัดผิดธรรมชาติ
-- แนบ Speaker Notes (สคริปต์บรรยายภาษาไทยพร้อมกำกับเวลาในการพูด 10 นาที ถาม-ตอบ 5 นาที) ครบทุกสไลด์
+---
+
+## 5. Modern Executive Presentation & Pitch Deck Design (slide-designer)
+เมื่อสร้างหรือออกแบบสไลด์นำเสนอสำหรับการ Pitching หรือสไลด์เชิงธุรกิจ:
+- เรียกใช้ทักษะ **`slide-designer`** (จาก [.agents/skills/slide-designer/SKILL.md](file:///.agents/skills/slide-designer/SKILL.md))
+- อัตราส่วนสไลด์ Widescreen 16:9 สไตล์ Modern Executive Bento Grid พร้อม Speaker Notes ภาษาไทย
+
+---
+
+## 6. UI/UX & Frontend Design System (inspo-design)
+เมื่อพัฒนา UI, Landing Page, หรือ Dashboard:
+- เรียกใช้ทักษะ **`inspo-design`** และ **`inspo` MCP**
+- อ้างอิงจาก 800+ เว็บไซต์จริง (Linear, Stripe, Supabase) ปราศจาก Generic AI Look
+
+---
+
+## 7. Context Packing & Repository Bundling (repomix)
+เมื่อต้องการรวมไฟล์โปรเจกต์ โค้ด หรือ Wiki เพื่อส่งต่อบริบท:
+- เรียกใช้ **`repomix`** เพื่อแพ็กไฟล์เป็น XML/Markdown พร้อม Tree Directory และ Token Count
+
+---
+
+## 8. Autonomous Web Browsing (browser-use)
+เมื่อต้องท่องเว็บที่ไม่มี API ล็อกอิน หรือดึงข้อมูลเชิงลึก:
+- เรียกใช้ **`browser-use`** ควบคุมเบราว์เซอร์ผ่าน Vision และ LLM เสมือนมนุษย์
+
+---
+
+## 9. Universal Model Routing & Failover (litellm)
+เมื่อต้องการเราต์หรือทำ Fallback โมเดลภาษา:
+- เรียกใช้ **`litellm`** สลับโมเดลอัตโนมัติเมื่อเกิด Rate limit หรือบริการล่ม
+
+---
+
+## 10. Algorithmic Prompts & Long-Term Memory (dspy & mem0)
+เมื่อต้องการเพิ่มประสิทธิภาพ Prompt หรือระบบความจำระยะยาว:
+- เรียกใช้ **`dspy`** คอมไพล์ Prompt อัตโนมัติ และ **`mem0`** จัดการความจำผู้ใช้

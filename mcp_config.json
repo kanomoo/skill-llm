@@ -1,0 +1,90 @@
+{
+  "mcpServers": {
+    "mineru": {
+      "command": "C:\\Users\\PC\\.mineru-env\\Scripts\\mineru-mcp.exe",
+      "args": [
+        "--transport",
+        "stdio"
+      ]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "perplexity": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "--yes",
+        "--quiet",
+        "@perplexity-ai/mcp-server@1.2.0"
+      ]
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest"
+      ]
+    },
+    "perplexity-user": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "perplexity-user-mcp"
+      ]
+    },
+    "github": {
+      "serverUrl": "https://api.githubcopilot.com/mcp/"
+    },
+    "context7": {
+      "serverUrl": "https://mcp.context7.com/mcp"
+    },
+    "playwright": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "--yes",
+        "--quiet",
+        "@playwright/mcp@0.0.78"
+      ]
+    },
+    "supabase": {
+      "serverUrl": "https://mcp.supabase.com/mcp?read_only=true&features=docs%2Cdatabase%2Cdebugging%2Cdevelopment"
+    },
+    "vercel": {
+      "serverUrl": "https://mcp.vercel.com"
+    },
+    "neon": {
+      "serverUrl": "https://mcp.neon.tech/mcp"
+    },
+    "postman": {
+      "serverUrl": "https://mcp.postman.com/code"
+    },
+    "sentry": {
+      "serverUrl": "https://mcp.sentry.dev/mcp"
+    },
+    "linear": {
+      "serverUrl": "https://mcp.linear.app/mcp/readonly"
+    },
+    "posthog": {
+      "serverUrl": "https://mcp.posthog.com/mcp"
+    },
+    "cloudflare": {
+      "serverUrl": "https://mcp.cloudflare.com/mcp"
+    },
+    "inspo": {
+      "url": "https://inspomcp.dev/api/mcp",
+      "serverUrl": "https://inspomcp.dev/api/mcp"
+    },
+    "composio": {
+      "url": "https://connect.composio.dev/mcp",
+      "serverUrl": "https://connect.composio.dev/mcp"
+    }
+  }
+}
