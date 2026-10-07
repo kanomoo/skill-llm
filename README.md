@@ -79,3 +79,35 @@ chmod +x setup-global-skills.sh
 # ติดตั้งและ Commit แต่ไม่ต้องรัน Git Push
 ./setup-global-skills.sh --skip-git-push
 ```
+
+---
+
+## 🤖 เครื่องมือ AI Gateway, Launchers & ตัวทดสอบระบบ (Diagnostics)
+
+ภายในโฟลเดอร์ `scripts/` มีเครื่องมืออำนวยความสะดวกสำหรับการรัน AI เบื้องหลังและการทดสอบระบบ:
+
+### 1. ทดสอบระบบ AI ทั้งหมดในเครื่อง (Comprehensive Diagnostic)
+รันคำสั่งเพื่อทดสอบ 9router, GitHub Copilot, Gemini, Groq, OpenRouter, Freebuff CLI และ LiteLLM:
+```powershell
+python scripts/test-all-ai.py
+```
+
+### 2. รัน 9router เป็น Background Service (System Tray)
+```powershell
+# ผ่าน Batch script หรือ PowerShell
+.\scripts\start-9router.bat
+# หรือ
+.\scripts\start-9router.ps1
+```
+* เปิดที่ `http://127.0.0.1:20128`
+* เชื่อมโยงโมเดลอัตโนมัติ: `gh/gpt-4o`, `gh/gpt-4.1`, `gh/gpt-4o-mini`, `gemini/gemini-3.5-flash-lite`, ฯลฯ
+
+### 3. รัน LiteLLM Unified Proxy
+```powershell
+.\scripts\start-litellm.bat
+# หรือ
+.\scripts\start-litellm.ps1
+```
+* เปิด OpenAI-compatible endpoint ที่ `http://127.0.0.1:4000`
+* ใช้คอนฟิกจาก `litellm_config.yaml` รวมทุกโมเดลเข้าด้วยกัน
+

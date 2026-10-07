@@ -1,0 +1,3 @@
+@echo off
+echo Starting LiteLLM Unified Proxy on http://127.0.0.1:4000...
+litellm --config "%~dp0..\litellm_config.yaml" --port 4000 --host 127.0.0.1

@@ -1,0 +1,33 @@
+# LiteLLM Unified Proxy Configuration
+# Integrates 9router, Groq, OpenRouter, and Gemini into one OpenAI-compatible endpoint
+
+model_list:
+  # Route to 9router's GitHub Copilot Models
+  - model_name: gpt-4o
+    litellm_params:
+      model: openai/gh/gpt-4o
+      api_base: http://127.0.0.1:20128/api/v1
+      api_key: sk-f3d6cab8b802be93-58rcfd-b626c4b3
+
+  - model_name: gpt-4o-mini
+    litellm_params:
+      model: openai/gh/gpt-4o-mini
+      api_base: http://127.0.0.1:20128/api/v1
+      api_key: sk-f3d6cab8b802be93-58rcfd-b626c4b3
+
+  # Route to 9router's Gemini Models
+  - model_name: gemini-flash
+    litellm_params:
+      model: openai/gemini/gemini-3.5-flash-lite
+      api_base: http://127.0.0.1:20128/api/v1
+      api_key: sk-f3d6cab8b802be93-58rcfd-b626c4b3
+
+  # Route to OpenRouter DeepSeek
+  - model_name: deepseek-chat
+    litellm_params:
+      model: openrouter/deepseek/deepseek-chat
+      api_key: os.environ/OPENROUTER_API_KEY
+
+litellm_settings:
+  drop_params: true
+  set_verbose: false
