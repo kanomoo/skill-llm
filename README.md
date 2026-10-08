@@ -22,6 +22,7 @@
 
 ### 1. กฎเหล็กและหลักการ (Rules)
 * **`effective_agent_principles.md`:** กฎข้อ 0 (ประเมินเจตนาและหยิบ Skill/MCP อัตโนมัติ) + 5 ท่ามาตรฐาน Anthropic (Evaluator loop, workflows first, context hygiene)
+* **`user_emails_and_free_perks.md`:** ฐานความจำสิทธิ์ฟรี 3 บัญชีอีเมล (Azure $100/yr, GitHub Copilot, M365 5 PCs, JetBrains, Canva Pro, KMUTNB Classroom)
 * **`pdf_document_standards.md`:** มาตรฐานเอกสาร PDF แบบ In-place filling ไม่สร้างกล่องลอยเกะกะ
 * **`ui_design_inspo_guidelines.md`:** แนวทางออกแบบ UI/UX ระดับโปรดักชัน ปราศจาก Generic AI Look
 * **`windows_gui_foreground_principles.md`:** หลักการจัดการหน้าต่าง GUI และ Foreground
@@ -79,6 +80,14 @@ chmod +x setup-global-skills.sh
 # ติดตั้งและ Commit แต่ไม่ต้องรัน Git Push
 ./setup-global-skills.sh --skip-git-push
 ```
+
+---
+
+## 🐧 การติดตั้ง AI ข้ามแพลตฟอร์ม: Windows Notebook vs Arch Linux (Hyprland)
+
+อ่านคู่มือฉบับเต็ม: 👉 [**`docs/cross-platform-ai-setup.md`**](./docs/cross-platform-ai-setup.md)
+* **Windows Notebook:** ใช้ LM Studio / Ollama / LiteLLM ได้ทันที
+* **Arch Linux (Hyprland):** แนะนำให้ใช้ **Ollama** (`pacman -S ollama` หรือ `yay -S ollama-cuda`) หรือ **llama.cpp** แทน LM Studio เนื่องจากความเข้ากันได้ 100% กับ Wayland/Hyprland และสามารถเชื่อมเข้า LiteLLM Gateway ได้ทันที
 
 ---
 
